@@ -5,11 +5,14 @@ package view;
 import controller.ReversiController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -17,11 +20,13 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import model.ReversiModel;
 
 public class ReversiView extends Application{
@@ -57,9 +62,19 @@ public class ReversiView extends Application{
 	}
 	
 	private void createMenuBar() {
+		// File Menu
 		Menu file = new Menu("File");
+		
+		// Create menu items
 		MenuItem newGame = new MenuItem("New Game");
-		MenuItem connectedGame = new MenuItem("Connected Game");
+		MenuItem connectedGame = new MenuItem("Networked Game");
+		
+		connectedGame.setOnAction(e -> {
+			NetworkSetup networkSetup = new NetworkSetup();
+			networkSetup.initSetup();
+		});
+		
+		// Add menu items to file dropdown
 		file.getItems().add(newGame);
 		file.getItems().add(connectedGame);
 		menuBar.getMenus().add(file);
