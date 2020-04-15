@@ -198,18 +198,29 @@ public class ReversiView extends Application {
 				}
 			}
 			
+			System.out.println("Row: " + row + " Col: " + col);
 			if(controller.isMoveValid(row, col)) {
-			
-
 				Circle newCircle = (Circle) pane.getChildren().get(0);
 				if (controller.getTurn() % 2 == 0) {
 					newCircle.setFill(Color.WHITE);
 				} else if (controller.getTurn() % 2 != 0) {
 					newCircle.setFill(Color.BLACK);
 				}
+					
+				controller.incrementTurn();	
 				
+				for (Node node : lis) {
+					if (GridPane.getColumnIndex(node) == controller.getChangedRow() && GridPane.getRowIndex(node) == controller.getChangedCol()) {
+						pane = (StackPane) node;
+					}
+				}
 				
-				controller.incrementTurn();
+				Circle changedCircle = (Circle) pane.getChildren().get(0);
+				if (changedCircle.getFill() == Color.WHITE) {
+					changedCircle.setFill(Color.BLACK);
+				} else if (changedCircle.getFill() == Color.BLACK) {
+					changedCircle.setFill(Color.WHITE);
+				}
 				
 				label.setText("White: " + controller.getWhiteScore() + " - Black: " + controller.getBlackScore());
 			} else {

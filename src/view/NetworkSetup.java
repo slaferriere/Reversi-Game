@@ -1,5 +1,7 @@
 package view;
 
+import java.io.IOException;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -36,8 +38,8 @@ public class NetworkSetup extends Stage {
 	private Button cancelButton = new Button("Cancel");
 	private TextField server = new TextField();
 	private TextField port = new TextField();
-	private String createSelection;
-	private String playAsSelection;
+	private String createSelection = "Server";
+	private String playAsSelection = "Human";
 	
 	/**
 	 * This method sets up the GUI for the network settings dialog box.
@@ -92,7 +94,13 @@ public class NetworkSetup extends Stage {
 		okButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				clickedOk();
+				try {
+					clickedOk();
+				} catch (NumberFormatException | IOException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -120,10 +128,20 @@ public class NetworkSetup extends Stage {
 	/**
 	 * When the OK button is clicked to confirm the network settings, 
 	 * this method is called.
+	 * @throws IOException 
+	 * @throws NumberFormatException 
+	 * @throws ClassNotFoundException 
 	 */
-	private void clickedOk() {
+	private void clickedOk() throws NumberFormatException, IOException, ClassNotFoundException {
 		String serverName = server.getText();
 		String portId = port.getText();
+		String[] args = {serverName, portId};
+		
+		if (createSelection.equals("Server")) {
+			Server.main(args);
+		} else if (createSelection.equals("Client")) {
+			Client.main(args);
+		}
 	}
 	
 	/**
