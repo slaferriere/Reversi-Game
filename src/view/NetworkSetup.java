@@ -39,6 +39,9 @@ public class NetworkSetup extends Stage {
 	private String createSelection;
 	private String playAsSelection;
 	
+	/**
+	 * This method sets up the GUI for the network settings dialog box.
+	 */
 	public void initSetup() {
 		dialog.setTitle("Network Setup");
 		dialog.setMinHeight(200);
@@ -114,11 +117,18 @@ public class NetworkSetup extends Stage {
 		dialog.showAndWait();
 	}
 	
+	/**
+	 * When the OK button is clicked to confirm the network settings, 
+	 * this method is called.
+	 */
 	private void clickedOk() {
 		String serverName = server.getText();
 		String portId = port.getText();
 	}
 	
+	/**
+	 * This method simply closes the dialog box if the user presses "cancel".
+	 */
 	private void clickedCancel() {
 		dialog.close();
 	}
