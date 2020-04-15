@@ -1,7 +1,5 @@
 package view;
 
-
-
 import controller.ReversiController;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
