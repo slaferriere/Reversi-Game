@@ -37,8 +37,8 @@ public class ReversiView extends Application {
 	private StackPane stackPane;
 	private StackPane pane;
 	private TilePane tilePane = new TilePane();
-	private ReversiModel model = new ReversiModel(0, 0);
-	private ReversiController controller = new ReversiController(model);
+	private ReversiModel model;
+	private ReversiController controller;
 	private Label label = new Label();
 	private MenuBar menuBar = new MenuBar();
 	private int row;
@@ -52,8 +52,7 @@ public class ReversiView extends Application {
 	public void start(Stage primaryStage) {
 		BorderPane window = new BorderPane();
 		
-		// Initialize score
-		label.setText("White: " + 0 + " - Black: " + 0);
+		
 		
 		// Initialize game board and menu bar
 		createGridPane();
@@ -117,6 +116,15 @@ public class ReversiView extends Application {
 	 * valid.
 	 */
 	private void createGridPane() {	
+		
+		// Initialize score
+		label.setText("White: " + 2 + " - Black: " + 2);
+		
+		// Instantiate model and controller
+		model = new ReversiModel();
+		controller = new ReversiController(model);
+		
+		
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				stackPane = new StackPane();
@@ -140,7 +148,7 @@ public class ReversiView extends Application {
 		// Register click on grid and determine the grid location from x and 
 		// y coordinates.
 		gridPane.setOnMouseClicked(e -> {
-			controller.incrementTurn();
+			
 			
 			// Grab x-position of the user click
 			if (e.getX() > 0 && e.getX() <= 47) {
@@ -189,15 +197,24 @@ public class ReversiView extends Application {
 					pane = (StackPane) node;
 				}
 			}
-
-			Circle newCircle = (Circle) pane.getChildren().get(0);
-			if (controller.getTurn() % 2 == 0) {
-				newCircle.setFill(Color.WHITE);
-			} else if (controller.getTurn() % 2 != 0) {
-				newCircle.setFill(Color.BLACK);
-			}
 			
-			label.setText("White: " + controller.getWhiteScore() + " - Black: " + controller.getBlackScore());
+			if(controller.isMoveValid(row, col)) {
+			
+
+				Circle newCircle = (Circle) pane.getChildren().get(0);
+				if (controller.getTurn() % 2 == 0) {
+					newCircle.setFill(Color.WHITE);
+				} else if (controller.getTurn() % 2 != 0) {
+					newCircle.setFill(Color.BLACK);
+				}
+				
+				
+				controller.incrementTurn();
+				
+				label.setText("White: " + controller.getWhiteScore() + " - Black: " + controller.getBlackScore());
+			} else {
+				System.out.println("Not valid move");
+			}
 		});
 	}
 }

@@ -8,10 +8,20 @@ public class ReversiModel extends Observable  {
 	private int yPos;
 	private int totBlack = 2;
 	private int totWhite = 2;
+	private int[][] arr = new int[8][8];
 	
-	public ReversiModel(int x, int y) { 
-		this.setxPos(x);
-		this.setyPos(y);
+	public ReversiModel() { 
+		// 0 is transparent
+		// 1 is white
+		// 2 is black
+		arr[3][3] = 1;
+		arr[4][4] = 1;
+		arr[4][3] = 2;
+		arr[3][4] = 2;
+	}
+	
+	public void updateSpace(int row, int col, int color) {
+		arr[row][col] = color;
 	}
 
 	public int getTotWhite() {
@@ -52,5 +62,9 @@ public class ReversiModel extends Observable  {
 
 	public void setyPos(int yPos) {
 		this.yPos = yPos;
+	}
+	
+	public int[][] getBoard() {
+		return arr;
 	}
 }
