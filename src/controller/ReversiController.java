@@ -61,7 +61,7 @@ public class ReversiController {
 		}		
 		
 		if (validOnRow(row, col) || validOnCol(row, col) || validOnDiagonal(row, col)) {
-			updateBoard(row, col);
+			model.updateSpace(row, col, colorCode);
 			return true;
 		}
 			
@@ -87,21 +87,54 @@ public class ReversiController {
 			rowCount1 = 7;
 		}
 		
-		if(board[rowCount1][col] == oppColorCode && board[rowCount2][col] == colorCode) { // piece to the left is opp color
-			changedRow = rowCount1;
-			changedCol = col;
-			model.updateSpace(rowCount1, col, colorCode);
-			return true;
-		} 
+		if(row < 6) { // Checks all pieces to the right
+			if(board[rowCount1][col] == oppColorCode) {
+				for(int i = rowCount2; i < 8; i++) {
+					if(board[i][col] == 0) {
+						break;
+					} else if(board[i][col] == colorCode) {
+						for(int j = row; j < i; j++) {
+							model.updateSpace(j, col, colorCode);
+						}
+						return true;
+					}
+				}
+			}
+		}
 		
 		rowCount1 = row - 1;
 		rowCount2 = row - 2;
-		if(board[rowCount1][col] == oppColorCode && board[rowCount2][col] == colorCode) { // checks right
-			changedRow = rowCount1;
-			changedCol = col;
-			model.updateSpace(rowCount1, col, colorCode);
-			return true;
-		} 
+		
+		if(row > 1) { // Checks all pieces to the left
+			if(board[rowCount1][col] == oppColorCode) {
+				for(int i = rowCount2; i > -1; i--) {
+					if(board[i][col] == 0) {
+						break;
+					} else if(board[i][col] == colorCode) {
+						for(int j = row; j > i; j--) {
+							model.updateSpace(j, col, colorCode);
+						}
+						return true;
+					}
+				}
+			}
+		}
+		
+//		if(board[rowCount1][col] == oppColorCode && board[rowCount2][col] == colorCode) { // piece to the left is opp color
+//			changedRow = rowCount1;
+//			changedCol = col;
+//			model.updateSpace(rowCount1, col, colorCode);
+//			return true;
+//		} 
+		
+//		rowCount1 = row - 1;
+//		rowCount2 = row - 2;
+//		if(board[rowCount1][col] == oppColorCode && board[rowCount2][col] == colorCode) { // checks right
+//			changedRow = rowCount1;
+//			changedCol = col;
+//			model.updateSpace(rowCount1, col, colorCode);
+//			return true;
+//		} 
 		
 		return false;
 	}
@@ -125,22 +158,41 @@ public class ReversiController {
 			colCount1 = 7;
 		}
 		
-		if(board[row][colCount1] == oppColorCode && board[row][colCount2] == colorCode) { // piece above is opp color
-			changedRow = row;
-			changedCol = colCount1;
-			model.updateSpace(row, colCount1, colorCode);
-			return true;
-		} 
+		if(col < 6) { // Checks all pieces above
+			if(board[row][colCount1] == oppColorCode) {
+				for(int i = colCount2; i < 8; i++) {
+					if(board[row][i] == 0) {
+						break;
+					} else if(board[row][i] == colorCode) {
+						for(int j = col; j < i; j++) {
+							model.updateSpace(row, j, colorCode);
+						}
+						return true;
+					}
+				}
+			}
+		}
+		
 		
 		colCount1 = col - 1;
 		colCount2 = col - 2;
-		if(board[row][colCount1] == oppColorCode && board[row][colCount2] == colorCode) { // piece below is opp color
-			changedRow = row;
-			changedCol = colCount1;
-			model.updateSpace(row, colCount1, colorCode);
-			return true;
+		
+		if(col > 1) { // Checks all pieces below
+			if(board[row][colCount1] == oppColorCode) {
+				for(int i = colCount2; i > -1; i--) {
+					if(board[row][i] == 0) {
+						break;
+					} else if(board[row][i] == colorCode) {
+						for(int j = col; j > i; j--) {
+							model.updateSpace(row, j, colorCode);
+						}
+						return true;
+					}
+				}
+			}
 		}
 		
+
 		return false;
 	}
 	
@@ -152,6 +204,46 @@ public class ReversiController {
 	 * @return
 	 */
 	private boolean validOnDiagonal(int row, int col) {
+		
+		int colCount1 = col + 1;
+		int colCount2 = col + 2;
+		int rowCount1 = row + 1;
+		int rowCount2 = row + 2;
+		
+		if (row + 2 > 7) {
+			rowCount2 = 7;
+		} 
+		
+		if (row + 1 > 7) {
+			rowCount1 = 7;
+		}
+		
+		if (col + 2 > 7) {
+			colCount2 = 7;
+		} 
+		
+		if (col + 1 > 7) {
+			colCount1 = 7;
+		}
+		
+		int maxCount = Math.max(rowCount2, colCount2);
+		
+		if(col < 6) { // Checks all pieces below and right
+			if(board[rowCount1][colCount1] == oppColorCode) {
+				for(int i = maxCount; i < 8; i++) {
+					if(board[i][i] == 0) {
+						break;
+					} else if(board[i][i] == colorCode) {
+						for(int j = col; j < i; j++) {
+							model.updateSpace(j, j, colorCode);
+						}
+						return true;
+					}
+				}
+			}
+		}
+		
+		
 		int possibleSpots = 8 - col;
 		if(board[row + 1][col + 1] == oppColorCode) { // piece above right is opp color
 			for(int i = 2; i < possibleSpots; i++) {
@@ -200,9 +292,6 @@ public class ReversiController {
 	 * @param row
 	 * @param col
 	 */
-	public void updateBoard(int row, int col) {
-		model.updateSpace(row, col, colorCode);
-	}
 
 	/**
 	 * Javadoc comment
