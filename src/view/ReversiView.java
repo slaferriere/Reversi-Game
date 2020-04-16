@@ -29,6 +29,16 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import model.ReversiModel;
 
+/**
+ * This is the view class for the Reversi program. In the program, the initial
+ * board setup is done and all of the event handlers are set up. This class 
+ * has methods that communicate with ReversiController in order to process a 
+ * users click and determine whether or not the requested move is valid. This
+ * class also contains methods that update the board after each click.
+ * 
+ * @author Trevor Freudig, Scott LaFerriere
+ *
+ */
 public class ReversiView extends Application {
 	
 	private GridPane gridPane = new GridPane();
@@ -50,9 +60,7 @@ public class ReversiView extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		BorderPane window = new BorderPane();
-		
-		
-		
+
 		// Initialize game board and menu bar
 		createGridPane();
 		createMenuBar();
@@ -124,8 +132,7 @@ public class ReversiView extends Application {
 		controller = new ReversiController(model);
 		board = new ReversiBoard(model);
 		
-		
-		
+		// Initial grid setup
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				stackPane = new StackPane();
@@ -149,7 +156,6 @@ public class ReversiView extends Application {
 		// Register click on grid and determine the grid location from x and 
 		// y coordinates.
 		gridPane.setOnMouseClicked(e -> {
-			
 			
 			// Grab x-position of the user click
 			if (e.getX() > 0 && e.getX() <= 47) {
@@ -202,10 +208,9 @@ public class ReversiView extends Application {
 			
 			System.out.println("Row: " + row + " Col: " + col);
 			if(controller.isMoveValid(row, col)) {
-							
-					
 				controller.incrementTurn();	
 				
+				// Update pieces after each click
 				for (Node node : lis) {
 					int color = board.getColor(GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
 					pane = (StackPane) node;
@@ -219,7 +224,7 @@ public class ReversiView extends Application {
 					}
 				}
 				
-				
+				// Update the score on the GUI
 				label.setText("White: " + controller.getWhiteScore() + " - Black: " + controller.getBlackScore());
 			} else {
 				System.out.println("Not valid move");
