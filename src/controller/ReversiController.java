@@ -13,6 +13,9 @@ public class ReversiController {
 	private int blackScore;
 	private int changedRow;
 	private int changedCol;
+	private boolean validRow;
+	private boolean validCol;
+	private boolean validDiagonal;
 
 	public ReversiController(ReversiModel model) {
 		this.model = model;
@@ -60,7 +63,11 @@ public class ReversiController {
 			return false;
 		}		
 		
-		if (validOnRow(row, col) || validOnCol(row, col) || validOnDiagonal(row, col)) {
+		validOnRow(row, col);
+		validOnCol(row, col);
+		validOnDiagonal(row, col);
+		
+		if (validRow || validCol || validDiagonal) {
 			model.updateSpace(row, col, colorCode);
 			return true;
 		}
@@ -75,7 +82,7 @@ public class ReversiController {
 	 * @param col
 	 * @return
 	 */
-	private boolean validOnRow(int row, int col) {
+	private void validOnRow(int row, int col) {
 		int rowCount1 = row + 1;
 		int rowCount2 = row + 2;
 		
@@ -96,7 +103,7 @@ public class ReversiController {
 						for(int j = row; j < i; j++) {
 							model.updateSpace(j, col, colorCode);
 						}
-						return true;
+						validRow = true;
 					}
 				}
 			}
@@ -114,13 +121,13 @@ public class ReversiController {
 						for(int j = row; j > i; j--) {
 							model.updateSpace(j, col, colorCode);
 						}
-						return true;
+						validRow = true;
 					}
 				}
 			}
+		} else {
+			validRow = false;
 		}
-		
-		return false;
 	}
 	
 	/**
@@ -130,7 +137,7 @@ public class ReversiController {
 	 * @param col
 	 * @return
 	 */
-	private boolean validOnCol(int row, int col) {
+	private void validOnCol(int row, int col) {
 		int colCount1 = col + 1;
 		int colCount2 = col + 2;
 		
@@ -151,7 +158,7 @@ public class ReversiController {
 						for(int j = col; j < i; j++) {
 							model.updateSpace(row, j, colorCode);
 						}
-						return true;
+						validCol = true;
 					}
 				}
 			}
@@ -170,13 +177,13 @@ public class ReversiController {
 						for(int j = col; j > i; j--) {
 							model.updateSpace(row, j, colorCode);
 						}
-						return true;
+						validCol = true;
 					}
 				}
-			}
-		}		
-
-		return false;
+			}		
+		} else {
+			validCol = false;
+		}
 	}
 	
 	/**
@@ -186,95 +193,106 @@ public class ReversiController {
 	 * @param col
 	 * @return
 	 */
-	private boolean validOnDiagonal(int row, int col) {
-		
-		int colCount1 = col + 1;
-		int colCount2 = col + 2;
-		int rowCount1 = row + 1;
-		int rowCount2 = row + 2;
-		
-		if (row + 2 > 7) {
-			rowCount2 = 7;
-		} 
-		
-		if (row + 1 > 7) {
-			rowCount1 = 7;
-		}
-		
-		if (col + 2 > 7) {
-			colCount2 = 7;
-		} 
-		
-		if (col + 1 > 7) {
-			colCount1 = 7;
-		}
-		
-		int maxCount = Math.max(rowCount2, colCount2);
-		
-		if(col < 6) { // Checks all pieces below and right
-			if(board[rowCount1][colCount1] == oppColorCode) {
-				for(int i = maxCount; i < 8; i++) {
-					if(board[i][i] == 0) {
-						break;
-					} else if(board[i][i] == colorCode) {
-						for(int j = col; j < i; j++) {
-							model.updateSpace(j, j, colorCode);
-						}
-						return true;
+	private void validOnDiagonal(int row, int col) {
+//		if(row + 1 > 7) {
+//			row = 6;
+//		}
+//		
+//		if (col + 1 > 7) {
+//			col = 6;
+//		}
+//		
+//		if (row - 1 < 0) {
+//			row = 1;
+//		}
+//		
+//		if (col - 1 < 0) {
+//			col = 1;
+//		}
+			
+		//Bottom left
+		if(board[row + 1][col - 1] == oppColorCode) {
+			int count = col;
+			for(int i = row + 1; i < 8; i++) {
+				count--;
+				if(board[i][count] == 0) {
+					break;
+				} else if(board[i][count] == colorCode) {
+					int rowCount = row;
+					int colCount = col;
+					for(int j = row; j < i; j++) {
+						rowCount++;
+						colCount--;
+						model.updateSpace(rowCount, colCount, colorCode);
 					}
+					validDiagonal = true;
 				}
 			}
 		}
 		
-		
-		int possibleSpots = 8 - col;
-		if(board[row + 1][col + 1] == oppColorCode) { // piece above right is opp color
-			for(int i = 2; i < possibleSpots; i++) {
-				if(board[row + i][col + i] == 0) {
-					return false;
-				} else if(board[row + i][col + i] == colorCode) {
-					return true;
+		// Bottom right
+		if(board[row - 1][col - 1] == oppColorCode) {
+			int count = col;
+			for(int i = row - 1; i >= 0; i--) {
+				count--;
+				if(board[i][count] == 0) {
+					break;
+				} else if(board[i][count] == colorCode) {
+					int rowCount = row;
+					int colCount = col;
+					for(int j = row; j > i; j--) {
+						rowCount--;
+						colCount--;
+						model.updateSpace(rowCount, colCount, colorCode);
+					}
+					validDiagonal = true;
 				}
 			}
-		} else if(board[row + 1][col - 1] == oppColorCode) { // piece below right is opp color
-			for(int i = 2; i < possibleSpots; i++) {
-				if(board[row + i][col - i] == 0) {
-					return false;
-				} else if(board[row + i][col - i] == colorCode) {
-					return true;
-				}
-			}
-			
-		} else if(board[row - 1][col - 1] == oppColorCode) { // piece below left is opp color
-			for(int i = 2; i < possibleSpots; i++) {
-				if(board[row - i][col - i] == 0) {
-					return false;
-				} else if(board[row - i][col - i] == colorCode) {
-					return true;
-				}
-			}
-			
-		} else if(board[row - 1][col + 1] == oppColorCode) { // piece above left is opp color
-			for(int i = 2; i < possibleSpots; i++) {
-				if(board[row - i][col + i] == 0) {
-					return false;
-				} else if(board[row - i][col + i] == colorCode) {
-					return true;
-				}
-			}
-			
 		}
-		return false;
+			
+		
+ 		// Top left
+		if(board[row + 1][col + 1] == oppColorCode) {
+			int count = col;
+			for(int i = row + 1; i < 8; i++) {
+				count++;
+				if(board[i][count] == 0) {
+					break;
+				} else if(board[i][count] == colorCode) {
+					int rowCount = row;
+					int colCount = col;
+					for(int j = row; j < i; j++) {
+						rowCount++;
+						colCount++;
+						model.updateSpace(rowCount, colCount, colorCode);
+					}
+					validDiagonal = true;
+				}
+			}
+		}	
+		
+		// Top right
+		if(board[row - 1][col + 1] == oppColorCode) {
+			int count = col;
+			for(int i = row - 1; i >= 0; i--) {
+				count++;
+				if(board[i][count] == 0) {
+					break;
+				} else if(board[i][count] == colorCode) {
+					int rowCount = row;
+					int colCount = col;
+					for(int j = row; j > i; j--) {
+						rowCount--;
+						colCount++;
+						model.updateSpace(rowCount, colCount, colorCode);
+					}
+					validDiagonal = true;
+				}
+			}
+		} else {
+			validDiagonal = false;
+		}
 	}
-	
-	
-
-	/**
-	 * Javadoc comment
-	 * 
-	 * @param row
-	 * @param col
-	 */
 
 	/**
 	 * Javadoc comment
