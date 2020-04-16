@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -47,6 +48,7 @@ public class ReversiView extends Application {
 	private ReversiBoard board;
 	private int row;
 	private int col;
+	private int gameCount = 0;
 
 	/**
 	 * This method is called by Reversi.java to initialize the game when the program
@@ -190,9 +192,6 @@ public class ReversiView extends Application {
 			} else if (e.getY() > 327 && e.getY() <= 374) {
 				col = 7;
 			}
-
-
-			
 			
 			System.out.println("Row: " + row + " Col: " + col);
 			controller.humanTurn(row, col);
@@ -207,11 +206,21 @@ public class ReversiView extends Application {
 //			controller.computerTurn();
 //			drawBoard();
 			
-			
 			label.setText("White: " + controller.getWhiteScore() + " - Black: " + controller.getBlackScore());
 			
-
-		});
+			if (gameCount == 0) {
+				System.out.println("first turn");
+			} else if (controller.isGameOver()) {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+				alert.setTitle("Message");
+				alert.setHeaderText("Message");
+				alert.setResizable(false);
+				alert.setContentText("You won!");
+				alert.showAndWait();
+			}
+			
+			gameCount++;
+		});	
 	}
 	
 	/**

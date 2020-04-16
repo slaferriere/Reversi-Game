@@ -30,6 +30,7 @@ public class ReversiController {
 	private boolean validCol;
 	private boolean validDiagonal;
 	private List<List<Integer>> updatedSpaces = new ArrayList<List<Integer>>();
+	private int placeHolder = 2;
 
 	/**
 	 * Constructor for ReversiController.
@@ -88,7 +89,6 @@ public class ReversiController {
 	 * @return boolean if move is valid or not
 	 */
 	public boolean isMoveValid(int row, int col) {
-		
 		if(turn % 2 == 0) {
 			colorCode = 1; // White
 			oppColorCode = 2; // Black
@@ -277,7 +277,11 @@ public class ReversiController {
 		if(board[newRow + 1][newCol - 1] == oppColorCode) {
 			int count = newCol;
 			for(int i = newRow + 1; i < 8; i++) {
-				count--;
+				if (count - 1 < 0) {
+					continue;
+				} else {
+					count--;
+				}
 				if(board[i][count] == 0) {
 					break;
 				} else if(board[i][count] == colorCode) {
@@ -312,7 +316,11 @@ public class ReversiController {
 		if(board[newRow - 1][newCol - 1] == oppColorCode) {
 			int count = newCol;
 			for(int i = newRow - 1; i >= 0; i--) {
-				count--;
+				if (count - 1 < 0) {
+					continue;
+				} else {
+					count--;
+				}
 				if(board[i][count] == 0) {
 					break;
 				} else if(board[i][count] == colorCode) {
@@ -347,7 +355,11 @@ public class ReversiController {
 		if(board[newRow + 1][newCol + 1] == oppColorCode) {
 			int count = newCol;
 			for(int i = newRow + 1; i < 8; i++) {
-				count++;
+				if (count + 1 > 7) {
+					continue;
+				} else {
+					count++;
+				}
 				if(board[i][count] == 0) {
 					break;
 				} else if(board[i][count] == colorCode) {
@@ -382,7 +394,11 @@ public class ReversiController {
 		if(board[newRow - 1][newCol + 1] == oppColorCode) {
 			int count = newCol;
 			for(int i = newRow - 1; i >= 0; i--) {
-				count++;
+				if (count + 1 > 7) {
+					continue;
+				} else {
+					count++;
+				}
 				if(board[i][count] == 0) {
 					break;
 				} else if(board[i][count] == colorCode) {
@@ -466,15 +482,70 @@ public class ReversiController {
 	 * @return boolean true if game is over, false otherwise
 	 */
 	public boolean isGameOver() {
+		boolean gameOverWhite = false;
+		boolean gameOverBlack = false;
+		int boardCount = 0;
+		placeHolder = 2;
+		
+		if (model.getTotWhite() == 0 || model.getTotBlack() == 0) {
+			return true;
+		}
+		
 		for(int i = 0; i < 8; i++) {
-			for(int j = 0; j < 8; j++) {
-				if(board[i][j] == 0) {
-					if(isMoveValid(i, j)) {
-						return false;
-					}
+			for(int j = 0; j < 8; j++) {		
+				if (model.getBoard()[i][j] != 0) {
+					boardCount++;
 				}
 			}
 		}
+		
+		if (boardCount == 64) {
+			return true;
+		}
+		
+		// Check game over for white
+		gameOverWhite = checkGameOver();
+		
+		placeHolder++;
+		
+		// Check game over for black
+		gameOverBlack = checkGameOver();
+		
+		if (gameOverWhite || gameOverBlack) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Helper method for isGameOver().
+	 * 
+	 * @return boolean representing the status of the game based off 
+	 * of if there are any valid moves left
+	 */
+	private boolean checkGameOver() {
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {		
+				if(placeHolder % 2 == 0) {
+					colorCode = 1; // White
+					oppColorCode = 2; // Black
+				} else {
+					colorCode = 2;
+					oppColorCode = 1;
+				}
+				
+				// Call helper methods to check validity of move
+				validOnRow(i, j);
+				validOnCol(i, j);
+				validOnDiagonal(i, j);
+				
+				if (validRow || validCol || validDiagonal) {
+					return false;
+				}
+			}
+		}
+		
 		return true;
 	}
 	
