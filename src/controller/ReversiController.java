@@ -1,5 +1,10 @@
 package controller;
 
+import java.util.ArrayList;
+
+import java.util.List;
+
+
 import model.ReversiModel;
 
 /**
@@ -24,6 +29,7 @@ public class ReversiController {
 	private boolean validRow;
 	private boolean validCol;
 	private boolean validDiagonal;
+	private List<List<Integer>> updatedSpaces = new ArrayList<List<Integer>>();
 
 	/**
 	 * Constructor for ReversiController.
@@ -122,6 +128,9 @@ public class ReversiController {
 	 * @param col current col of clicked location
 	 */
 	private void validOnRow(int row, int col) {
+		
+		validRow = false;
+		
 		int rowCount1 = row + 1;
 		int rowCount2 = row + 2;
 		
@@ -140,7 +149,10 @@ public class ReversiController {
 						break;
 					} else if(board[i][col] == colorCode) {
 						for(int j = row; j < i; j++) {
-							model.updateSpace(j, col, colorCode);
+							List<Integer> coordinates = new ArrayList<>();
+							coordinates.add(j);
+							coordinates.add(col);
+							updatedSpaces.add(coordinates);
 						}
 						validRow = true;
 					}
@@ -158,15 +170,18 @@ public class ReversiController {
 						break;
 					} else if(board[i][col] == colorCode) {
 						for(int j = row; j > i; j--) {
-							model.updateSpace(j, col, colorCode);
+							List<Integer> coordinates = new ArrayList<>();
+							coordinates.add(j);
+							coordinates.add(col);
+							updatedSpaces.add(coordinates);
 						}
 						validRow = true;
 					}
 				}
 			}
-		} else {
-			validRow = false;
 		}
+			
+		
 	}
 	
 	/**
@@ -183,6 +198,8 @@ public class ReversiController {
 		int colCount1 = col + 1;
 		int colCount2 = col + 2;
 		
+		validCol = false;
+		
 		if (col + 2 > 7) {
 			colCount2 = 7;
 		} 
@@ -198,7 +215,10 @@ public class ReversiController {
 						break;
 					} else if(board[row][i] == colorCode) {
 						for(int j = col; j < i; j++) {
-							model.updateSpace(row, j, colorCode);
+							List<Integer> coordinates = new ArrayList<>();
+							coordinates.add(row);
+							coordinates.add(j);
+							updatedSpaces.add(coordinates);
 						}
 						validCol = true;
 					}
@@ -217,15 +237,16 @@ public class ReversiController {
 						break;
 					} else if(board[row][i] == colorCode) {
 						for(int j = col; j > i; j--) {
-							model.updateSpace(row, j, colorCode);
+							List<Integer> coordinates = new ArrayList<>();
+							coordinates.add(row);
+							coordinates.add(j);
+							updatedSpaces.add(coordinates);
 						}
 						validCol = true;
 					}
 				}
 			}		
-		} else {
-			validCol = false;
-		}
+		} 
 	}
 	
 	/**
@@ -238,6 +259,9 @@ public class ReversiController {
 	 * @param col current col of clicked location
 	 */
 	private void validOnDiagonal(int row, int col) {
+		
+		validDiagonal = false;
+		
 		int newRow = row;
 		int newCol = col;
 		
@@ -262,7 +286,10 @@ public class ReversiController {
 					for(int j = newRow; j < i; j++) {
 						rowCount++;
 						colCount--;
-						model.updateSpace(rowCount, colCount, colorCode);
+						List<Integer> coordinates = new ArrayList<>();
+						coordinates.add(rowCount);
+						coordinates.add(colCount);
+						updatedSpaces.add(coordinates);
 					}
 					validDiagonal = true;
 				}
@@ -294,7 +321,10 @@ public class ReversiController {
 					for(int j = newRow; j > i; j--) {
 						rowCount--;
 						colCount--;
-						model.updateSpace(rowCount, colCount, colorCode);
+						List<Integer> coordinates = new ArrayList<>();
+						coordinates.add(rowCount);
+						coordinates.add(colCount);
+						updatedSpaces.add(coordinates);
 					}
 					validDiagonal = true;
 				}
@@ -326,7 +356,10 @@ public class ReversiController {
 					for(int j = newRow; j < i; j++) {
 						rowCount++;
 						colCount++;
-						model.updateSpace(rowCount, colCount, colorCode);
+						List<Integer> coordinates = new ArrayList<>();
+						coordinates.add(rowCount);
+						coordinates.add(colCount);
+						updatedSpaces.add(coordinates);
 					}
 					validDiagonal = true;
 				}
@@ -358,32 +391,73 @@ public class ReversiController {
 					for(int j = newRow; j > i; j--) {
 						rowCount--;
 						colCount++;
-						model.updateSpace(rowCount, colCount, colorCode);
+						List<Integer> coordinates = new ArrayList<>();
+						coordinates.add(rowCount);
+						coordinates.add(colCount);
+						updatedSpaces.add(coordinates);
 					}
 					validDiagonal = true;
 				}
 			}
-		} else {
-			validDiagonal = false;
-		}
+		} 
 	}
 
 	/**
-	 * Javadoc comment
+	 * This method iterates through the 2D array of spaces that's color need to be updated due to a human turn
+	 * capturing those pieces. It then increments the turn. 
+	 * 
+	 * updatedSpaces is a 2D array which contains the coordinated of the spaces whose color needs to be updated
+	 * EX: [ [2,1] , [2,2] ,[4,5], ...]
 	 * 
 	 * @param row current row of clicked location
 	 * @param col current col of clicked location
 	 */
 	public void humanTurn(int row, int col) {
+		updatedSpaces = new ArrayList<List<Integer>>();
+		if(isMoveValid(row, col)) {
+			for(int i = 0; i < updatedSpaces.size(); i++) {
+				model.updateSpace(updatedSpaces.get(i).get(0), updatedSpaces.get(i).get(1), colorCode);
+			}
+			turn++;
+		} else {
+			System.out.println("Not  valid move");
+		}
 		
 	}
 	
 	/**
-	 * Javadoc comment
+	 * This method makes a move for a computer player. It goes through every possible spot on the board,
+	 * and adds potential updated spaces to a 2D array. It then finds which move would provide
+	 * the largest amount of updated spaces (captured pieces) and makes that move.
+	 * 
+	 * NOT COMPLETELY CORRECT YET
 	 */
 	public void computerTurn() {
+		int maxLength = 0;
+		//updatedSpaces2 = new ArrayList<List<Integer>>();
+		List<List<Integer>> tempUpdatedSpaces = new ArrayList<List<Integer>>();
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				updatedSpaces = new ArrayList<List<Integer>>();
+				if(isMoveValid(i, j)) {
+					if(updatedSpaces.size() > maxLength) {
+						maxLength = updatedSpaces.size();
+						tempUpdatedSpaces = updatedSpaces;
+					}
+				}
+				
+			}
+		}
+		
+		
+		for(int i = 0; i < tempUpdatedSpaces.size(); i++) {
+			model.updateSpace(tempUpdatedSpaces.get(i).get(0), tempUpdatedSpaces.get(i).get(1), colorCode);
+		}
+		
+		turn++;
 
 	}
+
 	
 	/**
 	 * This method returns a boolean determining whether or not the game 

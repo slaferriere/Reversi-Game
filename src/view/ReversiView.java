@@ -4,15 +4,12 @@ import controller.ReversiController;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -20,13 +17,11 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import model.ReversiModel;
 
 /**
@@ -132,6 +127,7 @@ public class ReversiView extends Application {
 		controller = new ReversiController(model);
 		board = new ReversiBoard(model);
 		
+		
 		// Initial grid setup
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
@@ -194,42 +190,59 @@ public class ReversiView extends Application {
 			} else if (e.getY() > 327 && e.getY() <= 374) {
 				col = 7;
 			}
-			
-			// Iterate through the different stackpane nodes in gridPane and
-			// if the row and column indexes match the user click, make that 
-			// location our desired stackpane.
-			ObservableList<Node> lis = gridPane.getChildren();
-			for (Node node : lis) {
-				if (GridPane.getColumnIndex(node) == row && GridPane.getRowIndex(node) == col) {
-					pane = (StackPane) node;
-				}
-			}
+
+
 			
 			
 			System.out.println("Row: " + row + " Col: " + col);
-			if(controller.isMoveValid(row, col)) {
-				controller.incrementTurn();	
-				
-				// Update pieces after each click
-				for (Node node : lis) {
-					int color = board.getColor(GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
-					pane = (StackPane) node;
-					Circle changedCircle = (Circle) pane.getChildren().get(0);
-					if(color == 1) {
-						changedCircle.setFill(Color.WHITE);
-					} else if (color == 2) {
-						changedCircle.setFill(Color.BLACK);
-					} else if (color == 0) {
-						changedCircle.setFill(Color.TRANSPARENT);
-					}
-				}
-				
-				// Update the score on the GUI
-				label.setText("White: " + controller.getWhiteScore() + " - Black: " + controller.getBlackScore());
-			} else {
-				System.out.println("Not valid move");
-			}
+			controller.humanTurn(row, col);
+			drawBoard();
+			
+//			try {
+//				Thread.sleep(2000);
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//			controller.computerTurn();
+//			drawBoard();
+			
+			
+			label.setText("White: " + controller.getWhiteScore() + " - Black: " + controller.getBlackScore());
+			
+
 		});
+	}
+	
+	/**
+	 * 
+	 * This method draws the entire board based on the 2D array in the model. It iterates through each node in the gridPane
+	 * and fills the circle of that StackPane with a color based on the value in the array. (0 is transparent, 1 is white, 2 is black)
+	 * 
+	 */
+	
+	private void drawBoard() {
+		
+		
+		// Iterate through the different stackpane nodes in gridPane and
+		// if the row and column indexes match the user click, make that 
+		// location our desired stackpane.
+		
+		ObservableList<Node> lis = gridPane.getChildren();
+		
+		for (Node node : lis) {
+			int color = board.getColor(GridPane.getColumnIndex(node), GridPane.getRowIndex(node));
+			pane = (StackPane) node;
+			Circle changedCircle = (Circle) pane.getChildren().get(0);
+			if(color == 1) {
+				changedCircle.setFill(Color.WHITE);
+			} else if (color == 2) {
+				changedCircle.setFill(Color.BLACK);
+			} else if (color == 0) {
+				changedCircle.setFill(Color.TRANSPARENT);
+			}
+		}
+		
 	}
 	
 
