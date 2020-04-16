@@ -4,9 +4,7 @@ import model.ReversiModel;
 
 public class ReversiBoard {
 
-	private int row;
-	private int col;
-	private String color;
+
 	private int[][] board;
 	private ReversiModel model;
 	

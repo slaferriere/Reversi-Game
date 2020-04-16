@@ -40,6 +40,7 @@ public class NetworkSetup extends Stage {
 	private TextField port = new TextField();
 	private String createSelection = "Server";
 	private String playAsSelection = "Human";
+	private boolean computerPlayer = false;
 	
 	/**
 	 * This method sets up the GUI for the network settings dialog box.
@@ -149,6 +150,10 @@ public class NetworkSetup extends Stage {
 	 */
 	private void clickedCancel() {
 		dialog.close();
+	}
+	
+	public boolean getComputerPlayer() {
+		return computerPlayer;
 	}
 	
 }

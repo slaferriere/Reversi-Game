@@ -11,6 +11,7 @@ import java.util.Observable;
  */
 public class ReversiModel extends Observable  {
 
+
 	private int totBlack = 2;
 	private int totWhite = 2;
 	private int[][] arr = new int[8][8];
