@@ -1,6 +1,11 @@
 package tests;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.jupiter.api.Test;
+
+import controller.ReversiController;
+import model.ReversiModel;
 
 /**
  * This class collects all of the test methods for ReversiController.
@@ -16,36 +21,23 @@ public class ReversiControllerTests {
 	
 	@Test
 	void testGetWhiteScore() {
-
+		ReversiModel model = new ReversiModel();
+		ReversiController controller = new ReversiController(model);
+		
+		assertEquals(controller.getWhiteScore(), 2);
 	}
 
 	@Test
 	void testGetBlackScore() {
-
-	}
-
-	@Test
-	void testCalculateScore() { 
+		ReversiModel model = new ReversiModel();
+		ReversiController controller = new ReversiController(model);
 		
+		assertEquals(controller.getBlackScore(), 2);
 	}
+
 	
 	@Test
 	void testValidMove() { 
-
-	}
-	
-	@Test
-	void testValidRow() { 
-
-	}
-	
-	@Test
-	void testValidCol() { 
-
-	}
-	
-	@Test
-	void testValidDiagonal() { 
 
 	}
 	
