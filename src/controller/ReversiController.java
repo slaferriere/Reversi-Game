@@ -2,6 +2,16 @@ package controller;
 
 import model.ReversiModel;
 
+/**
+ * This class handles the main calculations and logic of the program. In this 
+ * class, the score is calculated/updated and each move is checked to be 
+ * valid or not. There are methods that check validity for a row move, col
+ * move, and diagonal move. The controller modifies the main board object of
+ * the program which is found in the model.
+ * 
+ * @author Trevor Freudig, Scott LaFerriere
+ *
+ */
 public class ReversiController {
 	
 	private ReversiModel model;
@@ -11,26 +21,44 @@ public class ReversiController {
 	private int[][] board;
 	private int whiteScore;
 	private int blackScore;
-	private int changedRow;
-	private int changedCol;
 	private boolean validRow;
 	private boolean validCol;
 	private boolean validDiagonal;
 
+	/**
+	 * Constructor for ReversiController.
+	 * 
+	 * @param model instance of ReversiModel
+	 */
 	public ReversiController(ReversiModel model) {
 		this.model = model;
 	}
 
+	/**
+	 * Getter method for the white score.
+	 * 
+	 * @return int white score
+	 */
 	public int getWhiteScore() {
 		calculateScore();
 		return whiteScore;
 	}
 	
+	/**
+	 * Getter method for the black score.
+	 * 
+	 * @return int black score
+	 */
 	public int getBlackScore() {
 		calculateScore();
 		return blackScore;
 	}
 	
+	/**
+	 * This method iterates through every stackpane in the board 
+	 * and determines how many white pieces there are and how many
+	 * black pieces there are.
+	 */
 	private void calculateScore() {
 		whiteScore = 0;
 		blackScore = 0;
@@ -45,7 +73,14 @@ public class ReversiController {
 		}
 	}
 	
-	// Method that checks to see if move is valid
+	/**
+	 * This method calls helper methods to determine whether or not a move 
+	 * is valid. 
+	 * 
+	 * @param row current row of clicked location
+	 * @param col current col of clicked location
+	 * @return boolean if move is valid or not
+	 */
 	public boolean isMoveValid(int row, int col) {
 		
 		if(turn % 2 == 0) {
@@ -63,6 +98,7 @@ public class ReversiController {
 			return false;
 		}		
 		
+		// Call helper methods to check validity of move
 		validOnRow(row, col);
 		validOnCol(row, col);
 		validOnDiagonal(row, col);
@@ -76,11 +112,14 @@ public class ReversiController {
 	}
 	
 	/**
-	 * Javadoc comment
+	 * This method uses iteration logic to determine if a move is valid
+	 * either to the left or to the right of another piece (in the row in
+	 * which the user clicks). This method also accounts for multiple
+	 * pieces of the opposite color in between the clicked location and the 
+	 * location that is the same color as the current turn.
 	 * 
-	 * @param row 
-	 * @param col
-	 * @return
+	 * @param row current row of clicked location
+	 * @param col current col of clicked location
 	 */
 	private void validOnRow(int row, int col) {
 		int rowCount1 = row + 1;
@@ -131,11 +170,14 @@ public class ReversiController {
 	}
 	
 	/**
-	 * Javadoc Comment
+	 * This method uses iteration logic to determine if a move is valid
+	 * either above or below of another piece (in the col in
+	 * which the user clicks). This method also accounts for multiple
+	 * pieces of the opposite color in between the clicked location and the 
+	 * location that is the same color as the current turn.
 	 * 
-	 * @param row
-	 * @param col
-	 * @return
+	 * @param row current row of clicked location
+	 * @param col current col of clicked location
 	 */
 	private void validOnCol(int row, int col) {
 		int colCount1 = col + 1;
@@ -187,40 +229,37 @@ public class ReversiController {
 	}
 	
 	/**
-	 * Javadoc comment
+	 * This method uses iteration logic to determine if a move is valid
+	 * diagonally from another piece. This method also accounts for multiple
+	 * pieces of the opposite color in between the clicked location and the 
+	 * location that is the same color as the current turn.
 	 * 
-	 * @param row
-	 * @param col
-	 * @return
+	 * @param row current row of clicked location
+	 * @param col current col of clicked location
 	 */
 	private void validOnDiagonal(int row, int col) {
-//		if(row + 1 > 7) {
-//			row = 6;
-//		}
-//		
-//		if (col + 1 > 7) {
-//			col = 6;
-//		}
-//		
-//		if (row - 1 < 0) {
-//			row = 1;
-//		}
-//		
-//		if (col - 1 < 0) {
-//			col = 1;
-//		}
+		int newRow = row;
+		int newCol = col;
+		
+		if (row + 1 > 7) {
+			newRow = 5;
+		}
+		
+		if (col - 1 < 0) {
+			newCol = 2;
+		}
 			
 		//Bottom left
-		if(board[row + 1][col - 1] == oppColorCode) {
-			int count = col;
-			for(int i = row + 1; i < 8; i++) {
+		if(board[newRow + 1][newCol - 1] == oppColorCode) {
+			int count = newCol;
+			for(int i = newRow + 1; i < 8; i++) {
 				count--;
 				if(board[i][count] == 0) {
 					break;
 				} else if(board[i][count] == colorCode) {
-					int rowCount = row;
-					int colCount = col;
-					for(int j = row; j < i; j++) {
+					int rowCount = newRow;
+					int colCount = newCol;
+					for(int j = newRow; j < i; j++) {
 						rowCount++;
 						colCount--;
 						model.updateSpace(rowCount, colCount, colorCode);
@@ -230,17 +269,29 @@ public class ReversiController {
 			}
 		}
 		
+		if (row - 1 < 0) {
+			newRow = 2;
+		} else {
+			newRow = row;
+		}
+		
+		if (col - 1 < 0) {
+			newCol = 2;
+		} else {
+			newCol = col;
+		}
+		
 		// Bottom right
-		if(board[row - 1][col - 1] == oppColorCode) {
-			int count = col;
-			for(int i = row - 1; i >= 0; i--) {
+		if(board[newRow - 1][newCol - 1] == oppColorCode) {
+			int count = newCol;
+			for(int i = newRow - 1; i >= 0; i--) {
 				count--;
 				if(board[i][count] == 0) {
 					break;
 				} else if(board[i][count] == colorCode) {
-					int rowCount = row;
-					int colCount = col;
-					for(int j = row; j > i; j--) {
+					int rowCount = newRow;
+					int colCount = newCol;
+					for(int j = newRow; j > i; j--) {
 						rowCount--;
 						colCount--;
 						model.updateSpace(rowCount, colCount, colorCode);
@@ -250,18 +301,29 @@ public class ReversiController {
 			}
 		}
 			
+		if (row + 1 > 7) {
+			newRow = 5;
+		} else {
+			newRow = row;
+		}
+		
+		if (col + 1 > 7) {
+			newCol = 5;
+		} else {
+			newCol = col;
+		}
 		
  		// Top left
-		if(board[row + 1][col + 1] == oppColorCode) {
-			int count = col;
-			for(int i = row + 1; i < 8; i++) {
+		if(board[newRow + 1][newCol + 1] == oppColorCode) {
+			int count = newCol;
+			for(int i = newRow + 1; i < 8; i++) {
 				count++;
 				if(board[i][count] == 0) {
 					break;
 				} else if(board[i][count] == colorCode) {
-					int rowCount = row;
-					int colCount = col;
-					for(int j = row; j < i; j++) {
+					int rowCount = newRow;
+					int colCount = newCol;
+					for(int j = newRow; j < i; j++) {
 						rowCount++;
 						colCount++;
 						model.updateSpace(rowCount, colCount, colorCode);
@@ -271,17 +333,29 @@ public class ReversiController {
 			}
 		}	
 		
+		if (col + 1 > 7) {
+			newCol = 5;
+		} else {
+			newCol = col;
+		}
+		
+		if (row - 1 < 0) {
+			newRow = 2;
+		} else {
+			newRow = row;
+		}
+		
 		// Top right
-		if(board[row - 1][col + 1] == oppColorCode) {
-			int count = col;
-			for(int i = row - 1; i >= 0; i--) {
+		if(board[newRow - 1][newCol + 1] == oppColorCode) {
+			int count = newCol;
+			for(int i = newRow - 1; i >= 0; i--) {
 				count++;
 				if(board[i][count] == 0) {
 					break;
 				} else if(board[i][count] == colorCode) {
-					int rowCount = row;
-					int colCount = col;
-					for(int j = row; j > i; j--) {
+					int rowCount = newRow;
+					int colCount = newCol;
+					for(int j = newRow; j > i; j--) {
 						rowCount--;
 						colCount++;
 						model.updateSpace(rowCount, colCount, colorCode);
@@ -297,8 +371,8 @@ public class ReversiController {
 	/**
 	 * Javadoc comment
 	 * 
-	 * @param row
-	 * @param col
+	 * @param row current row of clicked location
+	 * @param col current col of clicked location
 	 */
 	public void humanTurn(int row, int col) {
 		
@@ -311,12 +385,11 @@ public class ReversiController {
 
 	}
 	
-	// Not completely done b/c only checks if one color has a valid move
-	// Don't wanna increment the turn in case it fucks something else up
 	/**
-	 * Javadoc comment
+	 * This method returns a boolean determining whether or not the game 
+	 * is over.
 	 * 
-	 * @return
+	 * @return boolean true if game is over, false otherwise
 	 */
 	public boolean isGameOver() {
 		for(int i = 0; i < 8; i++) {
@@ -332,38 +405,19 @@ public class ReversiController {
 	}
 	
 	/**
-	 * Javadoc comment
+	 * This method simply increments the current turn each time
+	 * a move is played.
 	 */
 	public void incrementTurn() {
 		turn++;
 	}
 	
 	/**
-	 * Javadoc comment
+	 * Getter method for the current turn.
 	 * 
-	 * @return
+	 * @return int current turn
 	 */
 	public int getTurn() {
 		return turn;
 	}
-	
-	/**
-	 * JAvadoc comment
-	 * 
-	 * @return
-	 */
-	public int getChangedRow() {
-		return changedRow;
-	}
-	
-	/**
-	 * Javadoc comment
-	 * 
-	 * @return
-	 */
-	public int getChangedCol() {
-		return changedCol;
-	}
-
-	
 }
