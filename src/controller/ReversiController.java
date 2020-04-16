@@ -120,22 +120,6 @@ public class ReversiController {
 			}
 		}
 		
-//		if(board[rowCount1][col] == oppColorCode && board[rowCount2][col] == colorCode) { // piece to the left is opp color
-//			changedRow = rowCount1;
-//			changedCol = col;
-//			model.updateSpace(rowCount1, col, colorCode);
-//			return true;
-//		} 
-		
-//		rowCount1 = row - 1;
-//		rowCount2 = row - 2;
-//		if(board[rowCount1][col] == oppColorCode && board[rowCount2][col] == colorCode) { // checks right
-//			changedRow = rowCount1;
-//			changedCol = col;
-//			model.updateSpace(rowCount1, col, colorCode);
-//			return true;
-//		} 
-		
 		return false;
 	}
 	
@@ -190,8 +174,7 @@ public class ReversiController {
 					}
 				}
 			}
-		}
-		
+		}		
 
 		return false;
 	}

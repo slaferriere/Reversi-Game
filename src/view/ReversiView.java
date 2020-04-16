@@ -201,9 +201,7 @@ public class ReversiView extends Application {
 			
 			
 			System.out.println("Row: " + row + " Col: " + col);
-			if(controller.isMoveValid(row, col)) {
-							
-					
+			if(controller.isMoveValid(row, col)) {		
 				controller.incrementTurn();	
 				
 				for (Node node : lis) {
@@ -218,7 +216,7 @@ public class ReversiView extends Application {
 						changedCircle.setFill(Color.TRANSPARENT);
 					}
 				}
-				
+			
 				
 				label.setText("White: " + controller.getWhiteScore() + " - Black: " + controller.getBlackScore());
 			} else {
