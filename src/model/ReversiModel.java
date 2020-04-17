@@ -38,6 +38,8 @@ public class ReversiModel extends Observable  {
 	 */
 	public void updateSpace(int row, int col, int color) {
 		arr[row][col] = color;
+		setChanged();
+		notifyObservers();
 	}
 
 	/**

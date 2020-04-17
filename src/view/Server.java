@@ -9,6 +9,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+/**
+ * This class handles the initial setup for the main server that the game
+ * can be ran on.
+ * 
+ * @author Trevor Freudig, Scott LaFerriere
+ *
+ */
 public class Server {
 	
 	public static void main(String[] args) {

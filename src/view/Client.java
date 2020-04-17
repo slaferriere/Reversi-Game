@@ -9,7 +9,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+/**
+ * This class handles the initial setup for the main client side code.
+ * 
+ * @author Trevor Freudig, Scott LaFerriere
+ *
+ */
 public class Client {
+	
 	public static void main(String[] args) throws ClassNotFoundException {
 		try {
 			Socket server = new Socket(args[0], Integer.parseInt(args[1]));

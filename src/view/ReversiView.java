@@ -1,5 +1,8 @@
 package view;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import controller.ReversiController;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -35,7 +38,7 @@ import model.ReversiModel;
  * @author Trevor Freudig, Scott LaFerriere
  *
  */
-public class ReversiView extends Application {
+public class ReversiView extends Application implements Observer {
 	
 	private GridPane gridPane = new GridPane();
 	private StackPane stackPane;
@@ -56,6 +59,11 @@ public class ReversiView extends Application {
 	 */
 	@Override
 	public void start(Stage primaryStage) {
+		// Link observable and observer
+		ReversiModel modelObserved = new ReversiModel();
+		ReversiView observer = new ReversiView();
+		modelObserved.addObserver(observer);
+		
 		BorderPane window = new BorderPane();
 
 		// Initialize game board and menu bar
@@ -80,6 +88,10 @@ public class ReversiView extends Application {
 	
 	    //Display stage
 	    primaryStage.show();
+	}
+	
+	public void update(Observable obs, Object obj) {
+		System.out.println("Notified");
 	}
 	
 	/**
@@ -192,8 +204,7 @@ public class ReversiView extends Application {
 			} else if (e.getY() > 327 && e.getY() <= 374) {
 				col = 7;
 			}
-			
-			System.out.println("Row: " + row + " Col: " + col);
+
 			controller.humanTurn(row, col);
 			drawBoard();
 			
@@ -224,15 +235,10 @@ public class ReversiView extends Application {
 	}
 	
 	/**
-	 * 
 	 * This method draws the entire board based on the 2D array in the model. It iterates through each node in the gridPane
 	 * and fills the circle of that StackPane with a color based on the value in the array. (0 is transparent, 1 is white, 2 is black)
-	 * 
 	 */
-	
 	private void drawBoard() {
-		
-		
 		// Iterate through the different stackpane nodes in gridPane and
 		// if the row and column indexes match the user click, make that 
 		// location our desired stackpane.

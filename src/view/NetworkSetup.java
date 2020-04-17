@@ -20,6 +20,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * This class sets up the GUI for the menu option "Networked Game". This
+ * class also contains the methods to handle scenarios in which the "OK"
+ * and "Cancel" buttons are pressed.
+ * 
+ * @author Trevor Freudig, Scott LaFerriere
+ *
+ */
 public class NetworkSetup extends Stage {
 	
 	private Stage dialog = new Stage();
@@ -129,6 +137,7 @@ public class NetworkSetup extends Stage {
 	/**
 	 * When the OK button is clicked to confirm the network settings, 
 	 * this method is called.
+	 * 
 	 * @throws IOException 
 	 * @throws NumberFormatException 
 	 * @throws ClassNotFoundException 
@@ -152,6 +161,11 @@ public class NetworkSetup extends Stage {
 		dialog.close();
 	}
 	
+	/**
+	 * Getter method for whether or not player is computer.
+	 * 
+	 * @return boolean representing whether player is computer or not
+	 */
 	public boolean getComputerPlayer() {
 		return computerPlayer;
 	}

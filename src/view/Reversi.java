@@ -1,6 +1,7 @@
 package view;
 
 import javafx.application.Application;
+import model.ReversiModel;
 
 /**
  * This is the entry point to the program. This class starts the initial creation of
